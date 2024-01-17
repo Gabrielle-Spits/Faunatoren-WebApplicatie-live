@@ -1,0 +1,27 @@
+{
+  "name": "faunatoren-webapplicatie",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@auth0/auth0-vue": "^2.3.2",
+    "axios": "^1.5.1",
+    "bootstrap": "^5.3.2",
+    "chart.js": "^4.4.0",
+    "ol": "^8.2.0",
+    "vue": "^3.3.4",
+    "vue-chartjs": "^5.2.0",
+    "vue-material-design-icons": "^5.2.0",
+    "vue-router": "^4.2.5",
+    "vue-toasted": "^1.1.28",
+    "vue3-toast": "^0.0.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.4.0",
+    "vite": "^4.5.1"
+  }
+}
