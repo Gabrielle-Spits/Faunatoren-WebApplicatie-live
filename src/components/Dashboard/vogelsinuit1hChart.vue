@@ -69,23 +69,7 @@ export default {
       selectedTime: '1h',
       chartData: {
         labels: [],
-        datasets: [
-          {
-            fill: false,
-            data: [],
-            unoidid: '',
-          },
-          {
-            fill: false,
-            data: [],
-            unoidid: '',
-          },
-          {
-            fill: false,
-            data: [],
-            unoidid: '',
-          },
-        ],
+        datasets: [],
       },
       chartOptions: {
         responsive: true,
@@ -144,7 +128,8 @@ export default {
     selectedLocationId() {
       this.fetchVogelsDataLocatie();
     },
-    selectedUnoid() {
+    async selectedUnoid() {
+      await this.loadLineChartDataFromAPI();
       this.fetchVogelsDataUno();
     },
   },
@@ -189,16 +174,15 @@ export default {
     async loadLineChartDataFromAPI() {
       this.isLoading = true;
 
-      const labels = [];
-      const vogelsInData = [];
-      const vogelsUitData = [];
-      const vogelsInUitData = [];
-
       try {
         const response = await axios.get(this.apiUrl);
+
         const result = response.data;
 
         if (result && result.length > 0) {
+          const labels = [];
+          const datasets = [];
+
           result.forEach((dataRij) => {
             let tmpLabel = new Date(dataRij.time).toLocaleTimeString('nl-NL', {
               year: 'numeric',
@@ -211,7 +195,7 @@ export default {
 
             labels.unshift(tmpLabel);
 
-            let existingDataset1 = this.chartData.datasets.find(
+            let existingDataset1 = datasets.find(
               (dataset) => dataset.unoid === dataRij.unoid
             );
             if (!existingDataset1) {
@@ -222,13 +206,13 @@ export default {
                 fill: false,
                 data: [],
               };
-              this.chartData.datasets.push(existingDataset1);
+              datasets.push(existingDataset1);
             }
 
             let tmpVogelsIn = dataRij.vogelsIn;
             existingDataset1.data.unshift(tmpVogelsIn);
 
-            let existingDataset2 = this.chartData.datasets.find(
+            let existingDataset2 = datasets.find(
               (dataset) => dataset.unoid === dataRij.unoid + '_Uit'
             );
             if (!existingDataset2) {
@@ -239,13 +223,13 @@ export default {
                 fill: false,
                 data: [],
               };
-              this.chartData.datasets.push(existingDataset2);
+              datasets.push(existingDataset2);
             }
 
             let tmpVogelsUit = -dataRij.vogelsUit;
             existingDataset2.data.unshift(tmpVogelsUit);
 
-            let existingDataset3 = this.chartData.datasets.find(
+            let existingDataset3 = datasets.find(
               (dataset) => dataset.unoid === dataRij.unoid + '_InUit'
             );
             if (!existingDataset3) {
@@ -256,7 +240,7 @@ export default {
                 fill: false,
                 data: [],
               };
-              this.chartData.datasets.push(existingDataset3);
+              datasets.push(existingDataset3);
             }
 
             let tmpVogelsInUit = tmpVogelsIn + tmpVogelsUit;
@@ -264,10 +248,7 @@ export default {
           });
 
           this.chartData.labels = labels;
-          this.chartData.datasets[0].data = vogelsInData;
-          this.chartData.datasets[1].data = vogelsUitData;
-          this.chartData.datasets[2].data = vogelsInUitData;
-
+          this.chartData.datasets = datasets;
           this.chartOptions.scales.x.labels = labels;
         } else {
           console.error('Lege of onjuiste vogel-API-respons ontvangen.');
@@ -312,6 +293,7 @@ export default {
 .no-data-message {
   text-align: center;
   padding: 20px;
-  color: #888; /* Voeg een grijze kleur toe aan de tekst voor een informatieve uitstraling */
+  color: #888;
+  /* Voeg een grijze kleur toe aan de tekst voor een informatieve uitstraling */
 }
 </style>

@@ -22,7 +22,7 @@ import {
   CategoryScale,
   PointElement,
   LineElement
-} from 'chart.js/auto'; // Update import
+} from 'chart.js/auto';
 
 import axios from 'axios';
 
@@ -45,14 +45,14 @@ export default {
       type: Number,
       default: 300000 // standaard herlaadinterval is 5 minuten
     },
-  }, 
+  },
   computed: {
     hasData() {
       if (this.selectedUnoid) {
         // Toon alleen dataset voor geselecteerde unoid als deze is geselecteerd
         return this.chartData.datasets.some(dataset => dataset.unoid === this.selectedUnoid && dataset.data.length > 0);
       } else {
-        // Toon alle datasets als er geen unoid is geselecteerd
+                // Toon alle datasets als er geen unoid is geselecteerd
         return this.chartData.datasets.length > 0 && this.chartData.datasets.some(dataset => dataset.data.length > 0);
       }
     }
@@ -123,8 +123,6 @@ export default {
   },
   mounted() {
     this.loadWeightChartDataFromAPI();
-
-    // Stel automatische gegevensherladen in op het gespecificeerde interval
     setInterval(() => {
       console.log('Interval: gegevens worden opnieuw geladen');
       this.loadWeightChartDataFromAPI();
@@ -133,13 +131,14 @@ export default {
   methods: {
     async loadWeightChartDataFromAPI() {
       this.isLoading = true;
-
-     
       try {
         const response = await axios.get(this.apiUrl);
         const result = response.data;
 
         if (result && result.length > 0) {
+          const labels = [];
+          const datasets = [];
+
           result.forEach((dataRij) => {
             let tmpLabel = new Date(dataRij.time).toLocaleString('nl-NL', {
               year: 'numeric',
@@ -150,22 +149,26 @@ export default {
               timeZone: 'Europe/Amsterdam',
             });
 
-            labels.unshift(tmpLabel);
+            // Controleer of het dataset voor deze unoid al bestaat
+            let existingDatasetIndex = datasets.findIndex(dataset => dataset.unoid === dataRij.unoid);
 
-            let existingDataset = datasets.find(dataset => dataset.unoid === dataRij.unoid);
-            if (!existingDataset) {
-              existingDataset = {
+            if (existingDatasetIndex === -1) {
+              // Dataset bestaat nog niet, voeg het toe
+              let newDataset = {
                 unoid: dataRij.unoid,
                 label: `Gewicht ${dataRij.unoid}`,
                 borderColor: this.getRandomColor(),
                 fill: false,
-                data: []
+                data: [dataRij.weight], // Voeg het gewicht toe aan de nieuwe dataset
               };
-              datasets.push(existingDataset);
+
+              datasets.push(newDataset);
+            } else {
+              // Dataset bestaat al, voeg het gewicht toe aan de bestaande dataset
+              datasets[existingDatasetIndex].data.unshift(dataRij.weight);
             }
 
-            let tmpWeight = dataRij.weight;
-            existingDataset.data.unshift(tmpWeight);
+            labels.unshift(tmpLabel);
           });
 
           this.chartData.labels = labels;
@@ -183,8 +186,8 @@ export default {
         this.isLoading = false;
       }
     },
+
     getRandomColor() {
-      // Functie om willekeurige hex-kleur te genereren
       return '#' + Math.floor(Math.random() * 16777215).toString(16);
     }
   }
@@ -213,9 +216,10 @@ export default {
   width: 100% !important;
   height: 100% !important;
 }
+
 .no-data-message {
   text-align: center;
   padding: 20px;
-  color: #888; /* Voeg een grijze kleur toe aan de tekst voor een informatieve uitstraling */
+  color: #888;
 }
 </style>

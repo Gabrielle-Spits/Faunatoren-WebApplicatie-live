@@ -39,6 +39,13 @@ export default {
   },
   mounted() {
     this.actionOpenPageInLoggingDatabase();
+
+    const userRole = sessionStorage.getItem('role');
+
+    if (userRole !== 'Admin') {
+      alert('Niet geautoriseerd. U wordt doorgestuurd naar de home pagina.');
+      window.location.href = "/";
+    }
   },
 
 };
@@ -53,12 +60,11 @@ export default {
 .toggle-button {
   padding: 10px;
   font-size: 16px;
-  color: rgb(19, 101, 61); /* Aangepaste kleur bij hover */
-  background-color: rgb(39, 204, 124) ;
+  color: rgb(19, 101, 61);
+  /* Aangepaste kleur bij hover */
+  background-color: rgb(39, 204, 124);
   border-radius: 5px;
   cursor: pointer;
   width: 100%;
 }
-
-
 </style>

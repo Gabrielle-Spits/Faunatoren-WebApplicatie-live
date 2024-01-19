@@ -117,7 +117,6 @@ export default {
     this.loadLineChartDataFromAPI();
     setInterval(() => {
       this.loadLineChartDataFromAPI();
-      console.log("Hij wordt aangeroepen");
     }, 300000);
   },
   methods: {
@@ -149,11 +148,10 @@ export default {
             let tmpVogelsLangs = dataRij.radar;
 
             let existingDataset = datasets.find(dataset => dataset.unoid === dataRij.unoid);
-
             if (!existingDataset) {
               existingDataset = {
                 unoid: dataRij.unoid,
-                label: `Aantal vogels ${dataRij.unoid}`,
+                label: ` Arduino: ${dataRij.unoid}, aantal vogels langs`,
                 borderColor: this.getRandomColor(),
                 fill: false,
                 data: []
@@ -193,7 +191,6 @@ export default {
 
 .line-chart-radar {
   width: 100%;
-  max-width: 1250px;
   margin: 0 auto;
   max-height: 300px;
 }

@@ -92,7 +92,7 @@ export default {
         const formData = {
           email: this.email
         };
-        const url = "http://84.235.165.56:1880/get/login/one/" + this.email;
+        const url = "https://84.235.165.56:1880/get/login/one/" + this.email;
 
         const response = await fetch(url);
 
@@ -123,7 +123,7 @@ export default {
           role: this.role
         };
 
-        const response = await fetch('http://84.235.165.56:1880/post/login', {
+        const response = await fetch('https://84.235.165.56:1880/post/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

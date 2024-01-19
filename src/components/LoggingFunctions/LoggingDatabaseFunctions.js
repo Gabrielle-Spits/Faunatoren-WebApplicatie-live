@@ -7,7 +7,7 @@ export const addUserInLoginUsers = async (isIngelogd, isGelukt) => {
         boolOk: isGelukt
     };
 
-    fetch("http://84.235.165.56:1880/post/LoginGebruikers", {
+    fetch("https://84.235.165.56:1880/post/LoginGebruikers", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -42,7 +42,7 @@ export const addUserAction = async (activiteitType, schermnaam, origineleWaarde 
             schermnaam: schermnaam + ".vue"
         };
 
-        fetch("http://84.235.165.56:1880/post/logGebruikersacties", {
+        fetch("https://84.235.165.56:1880/post/logGebruikersacties", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -63,7 +63,7 @@ export const addUserAction = async (activiteitType, schermnaam, origineleWaarde 
 // Haalt alle gebruikersacties uit het document Gebruikersacties op
 export const getUserLogEntries = async () => {
     try {
-        const response = await fetch(`http://84.235.165.56:1880/get/gebruikersacties`, {
+        const response = await fetch(`https://84.235.165.56:1880/get/gebruikersacties`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -84,7 +84,7 @@ export const getUserLogEntries = async () => {
 // Haalt uit het document LoginGebuikers alle momenten wanneer in de applicatie is ingelogd op
 export const getMomentInloggen = async () => {
     try {
-        const response = await fetch(`http://84.235.165.56:1880/get/LoginGebruikers`, {
+        const response = await fetch(`https://84.235.165.56:1880/get/LoginGebruikers`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

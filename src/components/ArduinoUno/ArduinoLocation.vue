@@ -91,228 +91,245 @@ export default {
     this.fetchLocations();
     this.fetchArduinoData();
     this.actionOpenPageInLoggingDatabase();
+    const userRole = sessionStorage.getItem('role');
+
+    if (userRole !== 'Admin') {
+      alert('Niet geautoriseerd. U wordt doorgestuurd naar de home pagina.');
+      window.location.href = "/";
+    }
+},
+computed: {
+  isAuthorized() {
+    return this.role === 'Admin';
   },
-  computed: {
-    isAuthorized() {
-      return this.role === 'Admin';
-    },
+},
+methods: {
+  actionOpenPageInLoggingDatabase() {
+    addUserAction("Opent het scherm", this.$options.name);
   },
-  methods: {
-    actionOpenPageInLoggingDatabase() {
-      addUserAction("Opent het scherm", this.$options.name);
-    },
     async checkUnoidExists() {
-      try {
-        const url = `http://84.235.165.56:1880/get/uno/one/${this.unoid}`;
-        const response = await fetch(url);
-        if (response.status != 200) {
-          addUserAction("Foutmeldingscode " + response.status + " API call {http://84.235.165.56:1880/get/uno/one/${unoid}} in method {checkUnoidExists(unoid)}",
-            this.$options.name, String.empty, String.empty, "Het ophalen van gegevens van één specifieke Arduino is mislukt.");
-        }
-        const data = await response.json();
-        return data.length > 0;
-      } 
-      catch (error) {
-        addUserAction("Foutmelding in method checkUnoidExists(unoid)", this.$options.name, String.empty, String.empty,
-          "Server http://84.235.165.56:1880 down.");
-        console.error('Error checking unoid existence:', error);
-        return false;
+    try {
+      const url = `https://84.235.165.56:1880/get/uno/one/${this.unoid}`;
+      const response = await fetch(url);
+      if (response.status != 200) {
+        addUserAction("Foutmeldingscode " + response.status + " API call {https://84.235.165.56:1880/get/uno/one/${unoid}} in method {checkUnoidExists(unoid)}",
+          this.$options.name, String.empty, String.empty, "Het ophalen van gegevens van één specifieke Arduino is mislukt.");
       }
-    },
+      const data = await response.json();
+      return data.length > 0;
+    }
+    catch (error) {
+      addUserAction("Foutmelding in method checkUnoidExists(unoid)", this.$options.name, String.empty, String.empty,
+        "Server https://84.235.165.56:1880 down.");
+      console.error('Error checking unoid existence:', error);
+      return false;
+    }
+  },
 
     async checkUnonameExists(locatieId, unoname) {
-      try {
-        const response = await fetch(`http://84.235.165.56:1880/get/uno/${locatieId}`);
+    try {
+      const response = await fetch(`https://84.235.165.56:1880/get/uno/${locatieId}`);
 
-        if (response.status != 200) {
-          addUserAction("Foutmeldingscode " + response.status + "API call {http://84.235.165.56:1880/get/uno/${locatieId}} in method {checkUnonameExists(locatieId, unoname)}",
-            this.$options.name, String.empty, String.empty, "Het ophalen van gegevens van één specifieke locatie is mislukt.");
-        }
-
-        const data = await response.json();
-        return data.some(arduino => arduino.unoname === unoname);
-      } catch (error) {
-        addUserAction("Foutmelding in method checkUnonameExists(locatieId, unoname)", this.$options.name, String.empty, String.empty,
-          "Server http://84.235.165.56:1880 down.");
-        console.error('Error checking unoname existence:', error);
-        return false;
+      if (response.status != 200) {
+        addUserAction("Foutmeldingscode " + response.status + "API call {https://84.235.165.56:1880/get/uno/${locatieId}} in method {checkUnonameExists(locatieId, unoname)}",
+          this.$options.name, String.empty, String.empty, "Het ophalen van gegevens van één specifieke locatie is mislukt.");
       }
-    },
+
+      const data = await response.json();
+      return data.some(arduino => arduino.unoname === unoname);
+    } catch (error) {
+      addUserAction("Foutmelding in method checkUnonameExists(locatieId, unoname)", this.$options.name, String.empty, String.empty,
+        "Server http://84.235.165.56:1880 down.");
+      console.error('Error checking unoname existence:', error);
+      return false;
+    }
+  },
 
     async handleSubmit() {
-      const isOldDataEmpty = [this.locatieId, this.unoid, this.arduinonaam].some(value => value === '');
+    const isOldDataEmpty = [this.locatieId, this.unoid, this.arduinonaam].some(value => value === '');
 
-      if (!isOldDataEmpty) {
-        this.handleDataSubmission();
-      } else {
-        this.showError('Niet alle velden zijn ingevuld.');
-      }
-    },
+    if (!isOldDataEmpty) {
+      this.handleDataSubmission();
+    } else {
+      this.showError('Niet alle velden zijn ingevuld.');
+    }
+  },
 
     async handleDataSubmission() {
-      const unonameExists = await this.checkUnonameExists(this.locatieId, this.arduinonaam);
+    const unonameExists = await this.checkUnonameExists(this.locatieId, this.arduinonaam);
 
-      if (!unonameExists) {
-        if (this.showUpdateForm) {
-          this.updateArduino();
-        } else {
-          this.postArduino();
-        }
+    if (!unonameExists) {
+      if (this.showUpdateForm) {
+        this.updateArduino();
       } else {
-        this.showError('Arduino met deze naam bestaat al op deze locatie.');
+        this.postArduino();
       }
-    },
+    } else {
+      this.showError('Arduino met deze naam bestaat al op deze locatie.');
+    }
+  },
 
     async fetchLocations() {
-      try {
-        const response = await fetch('http://84.235.165.56:1880/get/location');
-        if (response.status != 200) {
-          addUserAction("Foutmeldingscode " + response.status + " API {http://84.235.165.56:1880/get/location} in method {fetchLocations()}",
-            this.$options.name, String.empty, String.empty, "Het ophalen van alle locaties is mislukt.");
-        }
-
-        const data = await response.json();
-        this.locations = data.map(location => location.locationid);
-      } catch (error) {
-        addUserAction("Foutmelding in method {fetchLocations()}", this.$options.name, String.empty, String.empty,
-          "Server http://84.235.165.56:1880 down.");
-        console.error('Er is een fout opgetreden bij het ophalen van locatiegegevens:', error);
+    try {
+      const response = await fetch('https://84.235.165.56:1880/get/location');
+      if (response.status != 200) {
+        addUserAction("Foutmeldingscode " + response.status + " API {http://84.235.165.56:1880/get/location} in method {fetchLocations()}",
+          this.$options.name, String.empty, String.empty, "Het ophalen van alle locaties is mislukt.");
       }
-    },
+
+      const data = await response.json();
+      this.locations = data.map(location => location.locationid);
+    } catch (error) {
+      addUserAction("Foutmelding in method {fetchLocations()}", this.$options.name, String.empty, String.empty,
+        "Server http://84.235.165.56:1880 down.");
+      console.error('Er is een fout opgetreden bij het ophalen van locatiegegevens:', error);
+    }
+  },
 
     // Hier ben ik
     async fetchArduinoData() {
-      try {
-        const response = await fetch('http://84.235.165.56:1880/get/uno');
-        if (response.status != 200) {
-          addUserAction("Foutmeldingscode " + response.status + " API {http://84.235.165.56:1880/get/uno} in method {fetchArduinoData()}",
-            this.$options.name, String.empty, String.empty, "Het ophalen van alle Arduino UNO's is mislukt.");
-        }
-
-        const data = await response.json();
-        this.arduinoData = data;
-      } catch (error) {
-        addUserAction("Foutmelding in method {fetchArduinoData()}", this.$options.name, String.empty, String.empty,
-          "Server http://84.235.165.56:1880 down.");
-        console.error('Er is een fout opgetreden bij het ophalen van Arduino-gegevens:', error);
+    try {
+      const response = await fetch('https://84.235.165.56:1880/get/uno');
+      if (response.status != 200) {
+        addUserAction("Foutmeldingscode " + response.status + " API {https://84.235.165.56:1880/get/uno} in method {fetchArduinoData()}",
+          this.$options.name, String.empty, String.empty, "Het ophalen van alle Arduino UNO's is mislukt.");
       }
-    },
+
+      const data = await response.json();
+      this.arduinoData = data;
+    } catch (error) {
+      addUserAction("Foutmelding in method {fetchArduinoData()}", this.$options.name, String.empty, String.empty,
+        "Server https://84.235.165.56:1880 down.");
+      console.error('Er is een fout opgetreden bij het ophalen van Arduino-gegevens:', error);
+    }
+  },
     async postArduino() {
-      const unoidExists = await this.checkUnoidExists(this.unoid);
-      if (unoidExists) {
-        this.showError('Arduino met dit ID bestaat al.');
-        return;
-      }
-      else {
-        }
-      const data = {
-        locationid: this.locatieId,
-        unoid: this.unoid,
-        unoname: this.arduinonaam,
-      };
+    const unoidExists = await this.checkUnoidExists(this.unoid);
+    if (unoidExists) {
+      this.showError('Arduino met dit ID bestaat al.');
+      return;
+    }
+    else {
+    }
+    const data = {
+      locationid: this.locatieId,
+      unoid: this.unoid,
+      unoname: this.arduinonaam,
+    };
 
-      try {
-        const response = await fetch('http://84.235.165.56:1880/post/uno', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
+    try {
+      const response = await fetch('https://84.235.165.56:1880/post/uno', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-        if (response.ok) {
-          const result = await response.json();
-          console.log('Arduino-gegevens succesvol toegevoegd:', result);
-          this.showSuccess('Arduino succesvol toegevoegd.');
-          this.resetForm();
-          this.fetchArduinoData();
-        } else {
-          addUserAction("Foutmelding API toevoegen Arduino UNO", this.$options.name, String.empty, String.empty, "Er is iets fout gegaan in de API call /post/uno.");
-          console.error('Fout bij het toevoegen van Arduino-gegevens:', response.statusText);
-          this.showError('Fout bij het toevoegen van Arduino-gegevens.');
-        }
-      } catch (error) {
-        addUserAction("Foutmelding API toevoegen Arduino UNO", this.$options.name, String.empty, String.empty, "De API call van het toevoegen van een Arduino UNO is ongeldig.");
-        console.error('Error posting Arduino data:', error);
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Arduino-gegevens succesvol toegevoegd:', result);
+        this.showSuccess('Arduino succesvol toegevoegd.');
+        this.resetForm();
+        this.fetchArduinoData();
+      } else {
+        addUserAction("Foutmelding API toevoegen Arduino UNO", this.$options.name, String.empty, String.empty, "Er is iets fout gegaan in de API call /post/uno.");
+        console.error('Fout bij het toevoegen van Arduino-gegevens:', response.statusText);
         this.showError('Fout bij het toevoegen van Arduino-gegevens.');
       }
-    },
+    } catch (error) {
+      addUserAction("Foutmelding API toevoegen Arduino UNO", this.$options.name, String.empty, String.empty, "De API call van het toevoegen van een Arduino UNO is ongeldig.");
+      console.error('Error posting Arduino data:', error);
+      this.showError('Fout bij het toevoegen van Arduino-gegevens.');
+    }
+  },
     async updateArduino() {
-      const data = {
-        locationid: this.locatieId,
-        unoid: this.unoid,
-        unoname: this.arduinonaam,
-      };
+    const data = {
+      locationid: this.locatieId,
+      unoid: this.unoid,
+      unoname: this.arduinonaam,
+    };
 
-      try {
-        const response = await fetch('http://84.235.165.56:1880/update/uno', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        });
+    try {
+      const response = await fetch('https://84.235.165.56:1880/update/uno', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-        if (response.ok) {
-          console.log(this.arduinonaam);
-          const result = await response.json();
-          console.log('Arduino-gegevens succesvol bijgewerkt:', result);
-          this.showSuccess('Arduino succesvol bijgewerkt.');
-          this.fetchArduinoData();
-        } else {
-          addUserAction("Foutmelding API wijzigen Arduino UNO", this.$options.name, String.empty, String.empty, "Er is iets fout gegaan in de API call /update/uno.");
-          console.log(response);
-          this.showError('Fout bij het bijwerken van Arduino-gegevens.');
-        }
-      } catch (error) {
-        addUserAction("Foutmelding API wijzigen Arduino UNO", this.$options.name, String.empty, String.empty, "De API call van het wijzigen van een Arduino UNO is ongeldig.");
-        console.error('Error updating Arduino data:', error);
+      if (response.ok) {
+        console.log(this.arduinonaam);
+        const result = await response.json();
+        console.log('Arduino-gegevens succesvol bijgewerkt:', result);
+        this.showSuccess('Arduino succesvol bijgewerkt.');
+        this.fetchArduinoData();
+      } else {
+        addUserAction("Foutmelding API wijzigen Arduino UNO", this.$options.name, String.empty, String.empty, "Er is iets fout gegaan in de API call /update/uno.");
+        console.log(response);
         this.showError('Fout bij het bijwerken van Arduino-gegevens.');
       }
-    },
-    updateArduinoClicked() {
-      this.showUpdateForm = !this.showUpdateForm;
-
-      if (this.showUpdateForm && this.arduinoData.length > 0) {
-        this.selectedLocation = this.arduinoData[0].unoid;
-        this.fillFormWithSelectedArduino();
-      } else {
-        this.selectedLocation = null;
-        this.resetForm();
-      }
-    },
-    fillFormWithSelectedArduino() {
-      const selectedArduino = this.arduinoData.find(arduino => arduino.unoid === this.selectedLocation);
-
-      if (selectedArduino) {
-        this.locatieId = selectedArduino.locationid;
-        this.unoid = selectedArduino.unoid;
-        this.arduinonaam = selectedArduino.unoname;
-      }
-    },
-    resetForm() {
-      this.locatieId = '';
-      this.unoid = '';
-      this.arduinonaam = '';
-    },
-    showSuccess(message) {
-      this.successMessage = message;
-      setTimeout(() => {
-        this.successMessage = ''; // Verwijder de succesmelding na een paar seconden
-      }, 5000);
-    },
-    showError(message) {
-      this.errorMessage = message;
-      setTimeout(() => {
-        this.errorMessage = ''; // Verwijder de foutmelding na een paar seconden
-      }, 5000);
-    },
+    } catch (error) {
+      addUserAction("Foutmelding API wijzigen Arduino UNO", this.$options.name, String.empty, String.empty, "De API call van het wijzigen van een Arduino UNO is ongeldig.");
+      console.error('Error updating Arduino data:', error);
+      this.showError('Fout bij het bijwerken van Arduino-gegevens.');
+    }
   },
+  updateArduinoClicked() {
+    this.showUpdateForm = !this.showUpdateForm;
+
+    if (this.showUpdateForm && this.arduinoData.length > 0) {
+      this.selectedLocation = this.arduinoData[0].unoid;
+      this.fillFormWithSelectedArduino();
+    } else {
+      this.selectedLocation = null;
+      this.resetForm();
+    }
+  },
+  fillFormWithSelectedArduino() {
+    const selectedArduino = this.arduinoData.find(arduino => arduino.unoid === this.selectedLocation);
+
+    if (selectedArduino) {
+      this.locatieId = selectedArduino.locationid;
+      this.unoid = selectedArduino.unoid;
+      this.arduinonaam = selectedArduino.unoname;
+    }
+  },
+  resetForm() {
+    this.locatieId = '';
+    this.unoid = '';
+    this.arduinonaam = '';
+  },
+  showSuccess(message) {
+    this.successMessage = message;
+    setTimeout(() => {
+      this.successMessage = ''; // Verwijder de succesmelding na een paar seconden
+    }, 5000);
+  },
+  showError(message) {
+    this.errorMessage = message;
+    setTimeout(() => {
+      this.errorMessage = ''; // Verwijder de foutmelding na een paar seconden
+    }, 5000);
+  },
+},
 };
 </script>
 
 <style scoped>
-/* Voeg hier eventueel stijlen toe */
+.locatie-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  /* Extra ruimte aan de bovenkant voor consistentie */
+}
+
+.locatieupdatentoevoegen {
+  width: 50%;
+  padding: 10px;
+}
+
 
 .error-message,
 .success-message {
@@ -330,23 +347,11 @@ export default {
   background-color: green;
 }
 
-.locatie-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  /* Extra ruimte aan de bovenkant voor consistentie */
-}
-
-.locatieupdatentoevoegen {
-  width: 50%;
-  padding: 10px;
-}
-
 .form-container {
   width: 100%;
   max-width: 400px;
   margin: 0 auto;
-  background-color: rgb(245, 245, 245);
+  background-color: #fdfff3;
   border: 1px solid gray;
   border-radius: 10px;
   padding: 16px;
@@ -360,6 +365,7 @@ export default {
 label {
   display: block;
   margin-bottom: 5px;
+  text-align: center;
 }
 
 input,
@@ -379,17 +385,26 @@ select:focus {
   border-color: #6c63ff;
 }
 
+#locatie {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  /* Voeg hier de margin toe aan de onderkant van de dropdown */
+}
+
 button,
 .action-button {
   width: 100%;
   padding: 8px;
-  background-color: #bababa;
+  background-color: #a6ad8d;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s;
+  margin-bottom: 10px;
+  /* Voeg hier de margin toe aan de bovenkant van de knop */
 }
 
 button:hover,
@@ -397,25 +412,32 @@ button:hover,
   background-color: #bababa;
 }
 
+
+.readUno {
+  width: 50%;
+  padding: 10px;
+}
+
 .arduino-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-bottom: 20px;
+  max-height: 325px;
+  overflow-y: auto;
 }
 
 .arduino-table th,
 .arduino-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #bfc5a4;
   padding: 8px;
   text-align: left;
 }
 
 .arduino-table th {
-  background-color: #f2f2f2;
-}
-
-#locatie {
-  width: 100%;
-  padding: 10px;
+  background-color: #bfc5a4;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  /* Zorg ervoor dat de kolomnamen boven de andere cellen blijven */
 }
 </style>

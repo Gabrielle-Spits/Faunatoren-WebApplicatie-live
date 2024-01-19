@@ -56,9 +56,15 @@ export default {
   computed: {
     hasData() {
       if (this.selectedUnoid) {
-        return this.chartData.datasets.some(dataset => dataset.unoid === this.selectedUnoid && dataset.data.length > 0);
+        return this.chartData.datasets.some(
+          (dataset) =>
+            dataset.unoid === this.selectedUnoid && dataset.data.length > 0
+        );
       } else {
-        return this.chartData.datasets.length > 0 && this.chartData.datasets.some(dataset => dataset.data.length > 0);
+        return (
+          this.chartData.datasets.length > 0 &&
+          this.chartData.datasets.some((dataset) => dataset.data.length > 0)
+        );
       }
     }
   },
@@ -67,13 +73,7 @@ export default {
       isLoading: false,
       chartData: {
         labels: [],
-        datasets: [
-          {
-            fill: false,
-            data: [],
-            unoid: '', // Add unoid property to the dataset
-          },
-        ],
+        datasets: [],
       },
       chartOptions: {
         responsive: true,
@@ -137,14 +137,14 @@ export default {
     async loadTemperatureChartDataFromAPI() {
       this.isLoading = true;
 
-      const labels = [];
-      const temperatureChartData = [];
-
       try {
         const response = await axios.get(this.apiUrl);
         const result = response.data;
 
         if (result && result.length > 0) {
+          const labels = [];
+          const datasets = [];
+
           result.forEach((dataRij) => {
             let tmpLabel = new Date(dataRij.time).toLocaleTimeString('nl-NL', {
               year: 'numeric',
@@ -157,7 +157,7 @@ export default {
 
             labels.unshift(tmpLabel);
 
-            let existingDataset = this.chartData.datasets.find(dataset => dataset.unoid === dataRij.unoid);
+            let existingDataset = datasets.find(dataset => dataset.unoid === dataRij.unoid);
 
             if (!existingDataset) {
               existingDataset = {
@@ -165,9 +165,9 @@ export default {
                 label: `Temperatuur ${dataRij.unoid}`,
                 borderColor: this.getRandomColor(),
                 fill: false,
-                data: []
+                data: [],
               };
-              this.chartData.datasets.push(existingDataset);
+              datasets.push(existingDataset);
             }
 
             let tmpData = dataRij.temp;
@@ -175,9 +175,10 @@ export default {
           });
 
           this.chartData.labels = labels;
+          this.chartData.datasets = datasets;
 
           // Update the max and min temperature
-          const allTemperatures = this.chartData.datasets.reduce((acc, dataset) => acc.concat(dataset.data), []);
+          const allTemperatures = datasets.reduce((acc, dataset) => acc.concat(dataset.data), []);
           const maxTemp = Math.max(...allTemperatures);
           const minTemp = Math.min(...allTemperatures);
 
@@ -210,7 +211,7 @@ export default {
 
 .line-chart-temperature {
   width: 100%;
-  max-width: 1200px;
+  /* max-width: 1250px; */
   margin: 0 auto;
   max-height: 300px;
 }

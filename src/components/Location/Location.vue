@@ -1,75 +1,70 @@
 <template>
-  <template v-if="isAuthorized">
-    <div class="locatie-container">
-      <div class="locatieupdatentoevoegen">
-        <h1 v-if="showUpdateForm && selectedLocation">Locatie updaten</h1>
-        <h1 v-else>Locatie toevoegen</h1>
-        <div v-if="errorMessage" class="error-message">
-          {{ errorMessage }}
-        </div>
-        <div v-if="successMessage" class="success-message">
-          {{ successMessage }}
-        </div>
-        <form @submit.prevent="handleSubmit" class="form-container-register">
-          <div class="form-group">
-            <label for="locationid">Locatie ID:</label>
-            <input v-model="locationid" :readonly="showUpdateForm" type="text" id="locationid">
-          </div>
-
-          <div class="form-group">
-            <label for="locationname">Locatie naam:</label>
-            <input v-model="locationname" type="text" id="locationname">
-          </div>
-
-          <div class="form-group">
-            <label for="latitude">Breedtegraad:</label>
-            <input v-model.number="latitude" @input="validateLatitude" type="number" step="any" id="latitude" />
-          </div>
-
-          <div class="form-group">
-            <label for="longitude">Lengtegraad:</label>
-            <input v-model.number="longitude" @input="validateLongitude" type="number" step="any" id="longitude" />
-          </div>
-
-          <input type="submit" :value="submitButtonLabel">
-        </form>
+  <div class="locatie-container">
+    <div class="locatieupdatentoevoegen">
+      <h1 v-if="showUpdateForm && selectedLocation">Locatie updaten</h1>
+      <h1 v-else>Locatie toevoegen</h1>
+      <div v-if="errorMessage" class="error-message">
+        {{ errorMessage }}
       </div>
-      <div class="locatiegegevens">
-        <h1>Locatiegegevens</h1>
-
-        <table>
-          <thead>
-            <tr>
-              <th>Locatie ID</th>
-              <th>Locatie Naam</th>
-              <th>Latitude</th>
-              <th>Longitude</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="location in locations" :key="location.locationid">
-              <td>{{ location.locationid }}</td>
-              <td>{{ location.locationname }}</td>
-              <td>{{ location.latitude }}</td>
-              <td>{{ location.longitude }}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <button class="action-button" @click="updateLocationClicked">{{ showUpdateForm ? 'Annuleren' : 'Update Locatie'
-        }}</button>
-
-        <select v-if="showUpdateForm" v-model="selectedLocation" @change="locationSelected">
-          <option v-for="location in locations" :key="location.locationid" :value="location.locationid">
-            {{ location.locationid }}
-          </option>
-        </select>
+      <div v-if="successMessage" class="success-message">
+        {{ successMessage }}
       </div>
+      <form @submit.prevent="handleSubmit" class="form-container-register">
+        <div class="form-group">
+          <label for="locationid">Locatie ID:</label>
+          <input v-model="locationid" :readonly="showUpdateForm" type="text" id="locationid">
+        </div>
+
+        <div class="form-group">
+          <label for="locationname">Locatie naam:</label>
+          <input v-model="locationname" type="text" id="locationname">
+        </div>
+
+        <div class="form-group">
+          <label for="latitude">Breedtegraad:</label>
+          <input v-model.number="latitude" @input="validateLatitude" type="number" step="any" id="latitude" />
+        </div>
+
+        <div class="form-group">
+          <label for="longitude">Lengtegraad:</label>
+          <input v-model.number="longitude" @input="validateLongitude" type="number" step="any" id="longitude" />
+        </div>
+
+        <input type="submit" class="submitLocation" :value="submitButtonLabel">
+      </form>
     </div>
-  </template>
-  <template v-else>
-    <p>U bent niet geautoriseerd om op deze pagina te komen</p>
-  </template>
+    <div class="locatiegegevens">
+      <h1>Locatiegegevens</h1>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Locatie ID</th>
+            <th>Locatie Naam</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="location in locations" :key="location.locationid">
+            <td>{{ location.locationid }}</td>
+            <td>{{ location.locationname }}</td>
+            <td>{{ location.latitude }}</td>
+            <td>{{ location.longitude }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <button class="action-button" @click="updateLocationClicked">{{ showUpdateForm ? 'Annuleren' : 'Update Locatie'
+      }}</button>
+
+      <select v-if="showUpdateForm" v-model="selectedLocation" @change="locationSelected">
+        <option v-for="location in locations" :key="location.locationid" :value="location.locationid">
+          {{ location.locationid }}
+        </option>
+      </select>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -100,11 +95,6 @@ export default {
   created() {
     this.fetchLocations();
   },
-  computed: {
-    isAuthorized() {
-      return this.role === 'Admin';
-    },
-  },
   watch: {
     selectedLocation(newVal) {
       this.fetchLocationDetails(newVal);
@@ -121,7 +111,7 @@ export default {
     },
     async fetchLocations() {
       try {
-        const response = await fetch('http://84.235.165.56:1880/get/location');
+        const response = await fetch('https://84.235.165.56:1880/get/location');
         const data = await response.json();
         this.locations = data;
         this.locationIds = this.locations.map(location => location.locationid);
@@ -131,7 +121,7 @@ export default {
     },
     async fetchLocationDetails(locationId) {
       try {
-        const response = await fetch(`http://84.235.165.56:1880/get/location/${locationId}`);
+        const response = await fetch(`https://84.235.165.56:1880/get/location/${locationId}`);
         const data = await response.json();
 
         if (data.length > 0) {
@@ -149,7 +139,7 @@ export default {
     },
     async checkLatitudeLongitude(latitude, longitude) {
       try {
-        const checkLatitudeLongitudeURL = 'http://84.235.165.56:1880/get/location';
+        const checkLatitudeLongitudeURL = 'https://84.235.165.56:1880/get/location';
         const checkLatitudeResponse = await fetch(checkLatitudeLongitudeURL);
         const latitudeLongitudeData = await checkLatitudeResponse.json();
 
@@ -184,7 +174,7 @@ export default {
             };
 
             try {
-              const responsePostLocation = await fetch('http://84.235.165.56:1880/post/location', {
+              const responsePostLocation = await fetch('https://84.235.165.56:1880/post/location', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -194,7 +184,7 @@ export default {
 
               if (responsePostLocation.ok) {
                 const result = await responsePostLocation.json();
-                this.showSuccess('Locatiegegevens succesvol toegevoegd:');
+                this.showSuccess('Locatiegegevens succesvol toegevoegd');
                 this.clearLocationDetails();
                 this.fetchLocations();
               } else {
@@ -235,7 +225,7 @@ export default {
           };
 
           try {
-            const response = await fetch(`http://84.235.165.56:1880/update/location`, {
+            const response = await fetch(`https://84.235.165.56:1880/update/location`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -272,7 +262,7 @@ export default {
     },
     async checkLocationExists() {
       try {
-        const url = `http://84.235.165.56:1880/get/location/${this.locationid}`;
+        const url = `https://84.235.165.56:1880/get/location/${this.locationid}`;
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -318,11 +308,18 @@ export default {
   },
   mounted() {
     this.actionOpenPageInLoggingDatabase();
+
+    const userRole = sessionStorage.getItem('role');
+
+    if (userRole !== 'Admin') {
+      alert('Niet geautoriseerd. U wordt doorgestuurd naar de home pagina.');
+      window.location.href = "/";
+    }
   }
 };
 </script>
 
-<style>
+<style scoped>
 .locatie-container {
   display: flex;
   justify-content: center;
@@ -342,44 +339,50 @@ export default {
   /* Stel een maximale breedte in voor het formulier */
   margin: 0 auto;
   /* Centreer het formulier binnen zijn container */
+  background-color: #fdfff3;
 }
 
-.locatiegegevens h1 {
-  margin-bottom: 10px;
-  /* Voeg wat ruimte toe onder de kop van de locatiegegevens */
+
+.submitLocation {
+  background-color: #A6AD8D;
+  color: #fdfff3;
+}
+
+.table-container {
+  max-height: 425px;
+  overflow-y: auto;
 }
 
 .locatiegegevens table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
 }
 
 .locatiegegevens th,
 .locatiegegevens td {
-  border: 1px solid #ddd;
+  border: 1px solid #c3caa5;
   padding: 8px;
   text-align: left;
 }
 
 .locatiegegevens th {
-  background-color: #f2f2f2;
+  background-color: #bfc5a4;
+  position: sticky;
+  top: 0;
 }
 
 .locatiegegevens button {
   margin-top: 10px;
   padding: 8px 16px;
-  background-color: #bababa;
+  background-color: #a6ad8d;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  width: 100%;
 }
 
-.locatiegegevens button:hover {
-  background-color: #a1a1a1;
-}
 
 .locatiegegevens select {
   width: 100%;
@@ -389,5 +392,9 @@ export default {
   border: 1px solid #ccc;
   box-sizing: border-box;
   border-radius: 4px;
+}
+
+.action-button {
+  width: 100%;
 }
 </style>

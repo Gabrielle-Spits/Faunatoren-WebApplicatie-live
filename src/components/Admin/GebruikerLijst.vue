@@ -67,6 +67,14 @@ export default {
 
     if (this.isAuthorized) {
       this.fetchUsers();
+    } else {
+      const userRole = sessionStorage.getItem('role');
+
+      if (userRole !== 'Admin') {
+        alert('Niet geautoriseerd. U wordt doorgestuurd naar de home pagina.');
+        window.location.href = "/";
+      }
+
     }
 
     this.actionOpenPageInLoggingDatabase();
@@ -77,23 +85,22 @@ export default {
     },
   },
   methods: {
-    actionOpenPageInLoggingDatabase(){
+    actionOpenPageInLoggingDatabase() {
       addUserAction("Opent het scherm", this.$options.name);
     },
     async fetchUsers() {
       try {
-        const response = await fetch('http://84.235.165.56:1880/get/login/all');
-        if (response.status != 200)
-        {
-          addUserAction("Foutmeldingscode " + response.status + " API call {http://84.235.165.56:1880/get/login/all} in method {fetchUsers()}",
-          this.$options.name, String.empty, String.empty, "Het ophalen van alle gebruikers is mislukt.");
+        const response = await fetch('https://84.235.165.56:1880/get/login/all');
+        if (response.status != 200) {
+          addUserAction("Foutmeldingscode " + response.status + " API call {https://84.235.165.56:1880/get/login/all} in method {fetchUsers()}",
+            this.$options.name, String.empty, String.empty, "Het ophalen van alle gebruikers is mislukt.");
         }
-        
+
         const data = await response.json();
         this.users = data.map(({ email, role }) => ({ email, role }));
       } catch (error) {
-        addUserAction("Foutmelding in method {fetchUsers()}", this.$options.name, String.empty, String.empty, 
-        "Server http://84.235.165.56:1880 down.");
+        addUserAction("Foutmelding in method {fetchUsers()}", this.$options.name, String.empty, String.empty,
+          "Server http://84.235.165.56:1880 down.");
         console.error('Error fetching user data:', error);
       }
     },
@@ -117,13 +124,13 @@ export default {
           console.log('Role saved:', user.role);
           user.editing = false; // Set editing status to false
         } else {
-          addUserAction("Foutmeldingscode " + response.status + " API call {http://84.235.165.56:1880/update/role} in method {saveRole(user)}", 
-          this.$options.name, String.empty, String.empty, "Het wijzigen van de rol van de gebruiker is mislukt.");
+          addUserAction("Foutmeldingscode " + response.status + " API call {http://84.235.165.56:1880/update/role} in method {saveRole(user)}",
+            this.$options.name, String.empty, String.empty, "Het wijzigen van de rol van de gebruiker is mislukt.");
           console.error('Failed to save role:', response.statusText);
         }
       } catch (error) {
-        addUserAction("Foutmelding in method {saveRole(user)}", this.$options.name, String.empty, String.empty, 
-        "Server http://84.235.165.56:1880 down.");
+        addUserAction("Foutmelding in method {saveRole(user)}", this.$options.name, String.empty, String.empty,
+          "Server http://84.235.165.56:1880 down.");
         console.error('Error saving role:', error);
       }
     },
@@ -146,13 +153,13 @@ export default {
           console.log('User deleted:', userEmail);
           this.fetchUsers(); // Refresh the user list after deletion
         } else {
-          addUserAction("Foutmeldingcode " + response.status + " API call {http://84.235.165.56:1880/delete/user} in method {deleteUser(userEmail)}", 
-          this.$options.name, String.empty, String.empty, "Het verwijderen van de gebruiker is mislukt.");
+          addUserAction("Foutmeldingcode " + response.status + " API call {http://84.235.165.56:1880/delete/user} in method {deleteUser(userEmail)}",
+            this.$options.name, String.empty, String.empty, "Het verwijderen van de gebruiker is mislukt.");
           console.error('Failed to delete user:', response.statusText);
         }
       } catch (error) {
-        addUserAction("Foutmelding in method {deleteUser(userEmail)}", this.$options.name, String.empty, String.empty, 
-        "Server http://84.235.165.56:1880 down.");
+        addUserAction("Foutmelding in method {deleteUser(userEmail)}", this.$options.name, String.empty, String.empty,
+          "Server http://84.235.165.56:1880 down.");
         console.error('Error deleting user:', error);
       }
     }

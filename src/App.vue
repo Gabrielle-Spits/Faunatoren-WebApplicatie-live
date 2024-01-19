@@ -1,7 +1,6 @@
 <template>
    <main>
-    <h1>hoi</h1>
-     <Navbar/>
+    <Navbar/>
    </main>
  </template>
  

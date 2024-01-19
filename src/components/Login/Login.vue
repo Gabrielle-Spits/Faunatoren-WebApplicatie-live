@@ -57,7 +57,7 @@ export default {
           boolIngelogd: 1,
           boolOk: isSuccesvolIngelogd
         };
-        const addEmailAndInlogmomentInLoggingDatabase = await fetch('http://193.123.33.162:1880/post/loglogin', {
+        const addEmailAndInlogmomentInLoggingDatabase = await fetch('https://193.123.33.162:1880/post/loglogin', {
           method: 'POST',
           headers: {
             'Content-type': 'application/json',
@@ -76,7 +76,7 @@ export default {
     },
     async handleLogin() {
       try {
-        const checkEmailUrl = `http://84.235.165.56:1880/get/login/one/` + this.email;
+        const checkEmailUrl = `https://84.235.165.56:1880/get/login/one/` + this.email;
         const emailResponse = await fetch(checkEmailUrl);
 
         if (!emailResponse.ok) {
@@ -86,7 +86,7 @@ export default {
           const wachtwoordDB = emailData[0].password;
           const emaildb = emailData[0].email;
 
-          const checkPassword = `http://84.235.165.56:1880/get/hash/` + this.password;
+          const checkPassword = `https://84.235.165.56:1880/get/hash/` + this.password;
           const hashResponse = await fetch(checkPassword);
 
           if (!hashResponse.ok) {

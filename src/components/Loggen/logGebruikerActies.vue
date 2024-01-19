@@ -1,9 +1,9 @@
 <template>
   <template v-if="isAuthorized">
     <div class="logGebruikerActies">
-      <h1>Gebruikerslogoverzicht</h1>
+      <h1 class="h1-gebruikersacties">Gebruikerslogoverzicht</h1>
       <div class="email-dropdown">
-        <label for="userEmails">Filter op e-mail:</label>
+        <label class="lblEmail" for="userEmails">Filter op e-mail:</label>
         <select id="userEmails" v-model="selectedUserEmail" @change="filterUserLogEntries">
           <option value="">Alle e-mails</option>
           <option v-for="email in userEmails" :key="email" :value="email">{{ email }}</option>
@@ -47,8 +47,18 @@
   padding-top: 10px;
 }
 
-h1 {
+.h1-gebruikersacties{
   margin-bottom: 20px;
+  color: rgb(19, 101, 61);
+}
+
+.email-dropdown {
+  margin-bottom: 20px;
+}
+
+.lblEmail{
+  margin-bottom: 15px;
+  text-align: center;
 }
 
 .table-container {
@@ -64,20 +74,21 @@ table {
 
 th,
 td {
-  border: 1px solid #ddd;
+  border: 1px solid rgb(39, 204, 124);
   padding: 8px;
-  text-align: left;
+  text-align: center;
 }
 
 th {
-  background-color: #f2f2f2;
+  border: 1px solid rgb(30, 161, 98);
+  background-color:rgb(39, 204, 124);
+  color: black;
   position: sticky;
   top: 0;
+  text-align: center;
 }
 
-.email-dropdown {
-  margin-bottom: 20px;
-}
+
 </style>
 
 <script>

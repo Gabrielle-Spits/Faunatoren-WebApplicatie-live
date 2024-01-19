@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Voorspelling vogels morgen</h2>
+    <h2 class="h2-voorspelling">Voorspelling vogels morgen</h2>
     <table class="vogels-table">
       <thead>
         <tr>
@@ -42,12 +42,12 @@ export default {
     async fetchData() {
       try {
         // Fetch gegevens van de eerste API
-        const responseVogels = await fetch('http://84.235.165.56:1880/mc/vogels');
+        const responseVogels = await fetch('https://84.235.165.56:1880/mc/vogels');
         const dataVogels = await responseVogels.json();
         this.vogels = dataVogels;
 
         // Fetch gegevens van de tweede API
-        const responseLangs = await fetch('http://84.235.165.56:1880/get/mc/radar');
+        const responseLangs = await fetch('https://84.235.165.56:1880/get/mc/radar');
         const dataLangs = await responseLangs.json();
         this.vogelsLangs = dataLangs;
       } catch (error) {
@@ -67,6 +67,10 @@ export default {
 </script>
 
 <style scoped>
+.h2-voorspelling{
+  text-align: center;
+  color: #1f6e13;
+}
 /* Voeg hier stijlen toe voor de tabel */
 .vogels-table {
   width: 100%;
@@ -76,12 +80,12 @@ export default {
 
 .vogels-table th,
 .vogels-table td {
-  border: 1px solid #ddd;
+  border: 1px solid #bfc5a4;
   padding: 8px;
   text-align: left;
 }
 
 .vogels-table th {
-  background-color: #f2f2f2;
+  background-color: #bfc5a4;
 }
 </style>

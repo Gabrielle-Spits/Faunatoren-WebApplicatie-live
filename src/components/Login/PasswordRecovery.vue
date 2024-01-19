@@ -68,7 +68,7 @@ export default {
     },
     async verifyEmailAndPasswordRecovery() {
       try {
-        const checkEmailUrl = `http://84.235.165.56:1880/get/login/one/${this.email}`;
+        const checkEmailUrl = `https://84.235.165.56:1880/get/login/one/${this.email}`;
         const emailResponse = await axios.get(checkEmailUrl);
 
         if (!emailResponse.ok) {
@@ -83,7 +83,7 @@ export default {
             const passwordRecoverydb = emailData[0].passwordRecovery;
 
             try {
-              const checkPasswordRecovery = `http://84.235.165.56:1880/get/hash/` + this.passwordRecovery;
+              const checkPasswordRecovery = `https://84.235.165.56:1880/get/hash/` + this.passwordRecovery;
               const hashResponse = await axios.get(checkPasswordRecovery);
               const hashData = hashResponse.data;
               const hashPasswordRecovery = hashData.hash;
@@ -112,7 +112,7 @@ export default {
           password: this.password,
         };
 
-        const response = await axios.put('http://84.235.165.56:1880/update/login', formData);
+        const response = await axios.put('https://84.235.165.56:1880/update/login', formData);
 
         if (response.ok) {
           alert('Wachtwoord is succesvol gewijzigd!');

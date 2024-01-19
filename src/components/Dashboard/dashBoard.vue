@@ -6,7 +6,7 @@
     <div class="filters-and-cart">
       <div class="filters">
         <div class="filter-group">
-          <h2>Filter op:</h2>
+          <h2 class="filterh2">Filter op:</h2>
 
           <!-- Tijd filter -->
           <div class="filter-cel">
@@ -53,7 +53,7 @@
     </div>
 
     <!-- Chart-container wordt weergegeven als er gegevens zijn -->
-    <div v-if="hasData" class="chart-container">
+     <div class="chart-container">
       <div class="chart-row">
         <Vogelsinuit1hChart :apiUrl="getApiUrlData(selectedTime, selectedUnoid)" :selectedLocationId="selectedLocationId"
           :selectedUnoid="selectedUnoid" />
@@ -69,10 +69,7 @@
       <div class="chart-row">
         <Gewicht1hChart :apiUrl="getApiUrlData(selectedTime, selectedUnoid)" :selectedUnoid="selectedUnoid" />
       </div>
-      <div class="chart-row">
-        <Battery1hChart :apiUrl="getApiUrlData(selectedTime, selectedUnoid)" />
-      </div>
-    </div>
+    </div> 
   </div>
 </template>
 
@@ -130,7 +127,7 @@ export default {
     },
     async fetchLocationOptions() {
       try {
-        const response = await axios.get('http://84.235.165.56:1880/get/location');
+        const response = await axios.get('https://84.235.165.56:1880/get/location');
         this.locationOptions = response.data;
         this.locationOptions = this.locationOptions.map(location => ({
           locationid: location.locationid,
@@ -142,7 +139,7 @@ export default {
     },
     async fetchUnoidOptions() {
       try {
-        const response = await axios.get(`http://84.235.165.56:1880/get/uno/${this.selectedLocationId}`);
+        const response = await axios.get(`https://84.235.165.56:1880/get/uno/${this.selectedLocationId}`);
         this.unoidOptions = response.data;
         this.filteredUnoidOptions = this.unoidOptions.map(location => ({
           unoid: location.unoid,
@@ -166,7 +163,6 @@ export default {
     },
     async fetchChartData() {
       try {
-        console.log("doe jij iets")
         const response = await axios.get(this.getApiUrlData(this.selectedTime, this.selectedUnoid));
       } catch (error) {
         addUserAction("Foutmelding API ophalen sensordata", this.$options.name, String.empty, String.empty, "Het ophalen van de sensordata o.b.v. tijd en unoID is mislukt.");
@@ -174,7 +170,7 @@ export default {
       }
     },
     getApiUrlData(time, unoid) {
-      return `http://84.235.165.56:1880/get/data/${time}/${unoid}`;
+      return `https://84.235.165.56:1880/get/data/${time}/${unoid}`;
     },
   },
   mounted() {
@@ -192,28 +188,31 @@ export default {
   gap: 20px;
 }
 
+.filterh2{
+  color: #1f6e13;
+}
+
 .filters-and-cart {
   display: flex;
+
 }
+
 
 .filters {
   width: 50%;
-  display: grid;
-  gap: 10px;
+  padding-left: 12.5%;
 }
 
 .filter-group {
-  display: grid;
-  gap: 10px;
+  width: 50%;
 }
 
 .filter-cel {
-  flex-direction: column;
-  width: 100%;
+  width: 50%;
 }
 
 .location-cart {
-  width: 50%;
+  width: 75%;
 }
 
 .chart-container {

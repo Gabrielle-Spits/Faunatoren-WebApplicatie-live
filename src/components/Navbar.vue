@@ -126,7 +126,7 @@ export default {
       var currentToken = '';
       // Haalt de token uit de database
       try {
-        const getToken = await fetch('http://84.235.165.56:1880/get/token')
+        const getToken = await fetch('https://84.235.165.56:1880/get/token')
           .then(getToken => getToken.json())
           .then(data => {
             currentToken = data[0].token;
@@ -171,6 +171,8 @@ export default {
       
       // hier maak ik sessie leeg
       sessionStorage.clear();
+      window.location.reload();
+
       // hier voer ik loggen uit voor uitlog moment
       this.logUitlogmoment(email);
     },
@@ -186,7 +188,7 @@ export default {
       };
 
       // Maak een Post-verzoek naar de API
-      fetch('http://193.123.33.162:1880/post/logLogin', {
+      fetch('https://84.235.165.56:1880/post/logLogin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
