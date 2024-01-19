@@ -7,7 +7,7 @@ import dashBoard from './components/Dashboard/dashBoard.vue'
 import Location from './components/Location/Location.vue'
 import GebruikerLijst from './components/Admin/GebruikerLijst.vue'
 import ArduinoLocation from './components/ArduinoUno/ArduinoLocation.vue'
-import Unauthorized from './components/Unauthorized/Unauthorized.vue'
+// import Unauthorized from './components/Unauthorized/Unauthorized.vue'
 import Loggen from './components/Loggen/ReadLoggen.vue'
 import logGebruikerActies from './components/Loggen/logGebruikerActies.vue'
 
@@ -23,7 +23,7 @@ const router = createRouter({
     { path: '/Location', component: Location },
     { path: '/GebruikerLijst', component: GebruikerLijst },
     { path: '/ArduinoLocation', component: ArduinoLocation },
-    { path: '/Unauthorized', component: Unauthorized },
+    // { path: '/Unauthorized', component: Unauthorized },
     { path: '/Loggen', component: Loggen },
     { path: '/Loggen', component: logGebruikerActies }
 
