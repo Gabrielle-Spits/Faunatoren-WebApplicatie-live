@@ -163,7 +163,7 @@ export default {
       // Leeg, want hij wordt toch overschreven in de mounted()
     },
     logoutAuth() {
-      this.$auth0.logout({ logoutParams: { returnTo: 'https://wonderful-stone-0a33b7110.4.azurestaticapps.net' } })
+      this.$auth0.logout({ logoutParams: { returnTo: 'https://wonderful-stone-0a33b7110.4.azurestaticapps.net/' } })
     },
     handleLogout() {
       // hier haal ik email op
