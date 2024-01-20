@@ -166,10 +166,12 @@ export default {
 
       // Leeg, want hij wordt toch overschreven in de mounted()
     },
-    logoutAuth() {
+    logoutAuth() {          
+      const url = 'https://wonderful-stone-0a33b7110.4.azurestaticapps.net/'
+      console.log(url);
       this.$auth0.logout({
         logoutParams: {
-          returnTo: 'https://wonderful-stone-0a33b7110.4.azurestaticapps.net/'
+          returnTo: url
         }
       }).then(() => {
         console.log('Logout successful');
