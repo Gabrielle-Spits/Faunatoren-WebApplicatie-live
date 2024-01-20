@@ -72,21 +72,21 @@ export default {
     // De gegevens uit oAuth zijn opgehaald
     handleOauthCallback() {
       // Deze methode wordt pas uitgevoerd als de oAuth klaar is met laden... 
-      console.log(this.isAuthenticated);
-      console.log(this.currentUser);
+      // console.log(this.isAuthenticated);
+      // console.log(this.currentUser);
 
       this.checkUserIsBlocked();
 
       // Als de gebruiker is geautoriseert (is niet geblokkeerd), het e-mailadres in de session storage zetten
       if (this.isAuthenticated) {
-        console.log(this.currentUser.email);
+        // console.log(this.currentUser.email);
         sessionStorage.setItem("username", this.currentUser.email);
         this.username =this.currentUser.email;
         sessionStorage.setItem("inlogmoment", new Date().toLocaleString("nl-NL").replace('T', ' ').replace('Z', ''));
 
         try {
           addUserInLoginUsers(1, 1);
-          console.log("Werkt addUserInLoginUsers.");
+          // console.log("Werkt addUserInLoginUsers.");
         }
         catch (error) {
 
@@ -111,13 +111,13 @@ export default {
       })
         .then(convertToJson => convertToJson.json())
         .then(getUserInfo => {
-          console.log("User info: ");
-          console.log(getUserInfo);
+          // console.log("User info: ");
+          // console.log(getUserInfo);
           var isBlocked = getUserInfo.blocked == true ? "Geblokkeerd" : "Toegang"
-          console.log("Geautoriseerd: " + isBlocked);
+          // console.log("Geautoriseerd: " + isBlocked);
         })
         .catch(error => {
-          console.error("error" + error);
+          // console.error("error" + error);
         })
     },
     // Haalt de rol van de ingelogde gebruiker op
@@ -133,7 +133,7 @@ export default {
           })
       }
       catch (error) {
-        console.log("De token kan niet uit de database worden opgehaald: ", error);
+        // console.log("De token kan niet uit de database worden opgehaald: ", error);
       }
 
       // Haalt alle rollen uit de OAuth op
@@ -147,14 +147,12 @@ export default {
         })
           .then(getRole => getRole.json())
           .then(data => {
-            console.log(data);
-            console.log(data[0].name);
             sessionStorage.setItem('role', data[0].name);
             this.role = data[0].name;
           })
       }
       catch (error) {
-        console.log("Alle rollen van de gebruikers kunnen niet in OAuth worden opgehaald: ", error);
+        // console.error("Alle rollen van de gebruikers kunnen niet in OAuth worden opgehaald: ", error);
       }
     },
     loginAuth() {
@@ -199,16 +197,15 @@ export default {
           if (response.ok) {
             window.location.reload();
             // SessionStorage leegmaken
-            console.log(uitlogmoment);
-
+            sessionStorage.clear();
           } else {
             response.json().then(data => {
-              console.error('Er is een fout opgetreden bij het bijwerken van het uitlogmoment:', data);
+              // console.error('Er is een fout opgetreden bij het bijwerken van het uitlogmoment:', data);
             });
           }
         })
         .catch(error => {
-          console.error('Er is een fout opgetreden bij het maken van het uitlogverzoek:', error);
+          // console.error('Er is een fout opgetreden bij het maken van het uitlogverzoek:', error);
         });
     },
   },
