@@ -163,7 +163,7 @@ export default {
       // Leeg, want hij wordt toch overschreven in de mounted()
     },
     logoutAuth() {
-      this.$auth0.logout({ logoutParams: { returnTo: 'http://localhost:5173' } })
+      this.$auth0.logout({ logoutParams: { returnTo: 'https://lively-coast-0593e4203.4.azurestaticapps.net/' } })
     },
     handleLogout() {
       // hier haal ik email op
