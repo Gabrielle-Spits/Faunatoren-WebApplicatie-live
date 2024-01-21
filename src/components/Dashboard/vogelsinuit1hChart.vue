@@ -148,7 +148,7 @@ export default {
         if (!this.selectedLocationId) {
           this.aantalVogelLocatie = '';
         } else {
-          const apiUrl = `http://84.235.165.56:1880/get/InUitVL/${this.selectedLocationId}`;
+          const apiUrl = `https://84.235.165.56:1880/get/InUitVL/${this.selectedLocationId}`;
           const response = await axios.get(apiUrl);
           const data = response.data;
           this.aantalVogelLocatie = `aantal vogels in de toren ${this.selectedLocationId}: ${data.totalIn}`;
@@ -162,7 +162,7 @@ export default {
         if (!this.selectedUnoid) {
           this.aantalVogelArduino = '';
         } else {
-          const apiUrl = `http://84.235.165.56:1880/get/InUitVU/${this.selectedUnoid}`;
+          const apiUrl = `https://84.235.165.56:1880/get/InUitVU/${this.selectedUnoid}`;
           const response = await axios.get(apiUrl);
           const data = response.data;
           this.aantalVogelArduino = `aantal vogels in het vogelhuisje ${this.selectedUnoid}: ${data.TotalIn}`;
