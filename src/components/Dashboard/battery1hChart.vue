@@ -125,11 +125,9 @@ export default {
           this.chartOptions.scales.x.labels = labels.slice();
         } else {
           addUserAction("Foutmelding API ophalen batterijgegevens", this.$options.name, String.empty, String.empty, "Lege of onjuiste API-respons ontvangen.");
-          console.error('Lege of onjuiste API-respons ontvangen.');
         }
       } catch (error) {
         addUserAction("Foutmelding API ophalen batterijgegevens", this.$options.name, String.empty, String.empty, "Er is een fout opgetreden bij het ophalen van de batterijgegevens van de Arduino.");
-        console.error('Fout bij het laden van de gegevens:', error);
       } finally {
         this.isLoading = false;
       }

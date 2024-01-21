@@ -32,6 +32,8 @@
 </template>
   
 <script>
+  import { addUserAction } from './../LoggingFunctions/LoggingDatabaseFunctions.js';
+
 export default {
   name: 'logInlogmomentenGebruiker',
   data() {
@@ -46,17 +48,30 @@ export default {
   mounted() {
     // Haal gegevens op van de API
     this.fetchUserLoginData();
+
+    this.actionOpenPageInLoggingDatabase();
   },
   methods: {
+    actionOpenPageInLoggingDatabase() {
+      addUserAction("Opent het scherm", this.$options.name);
+    },
     async fetchUserLoginData() {
       try {
         const response = await fetch('https://84.235.165.56:1880/get/LoginGebruikers');
+
+        if (response.status != 200){
+          addUserAction("Foutmeldingscode " + response.status + " API call {https://84.235.165.56:1880/get/LoginGebruikers} in method {fetchUserLoginData()}",
+          this.$options.name, String.empty, String.empty, "Het ophalen van gegevens van de ingelogde gebruikers is mislukt.");
+        }
+
         const data = await response.json();
         this.users = data;
         this.userEmails = [...new Set(this.users.map(user => user.emailadres))];
         this.filterUserLoginData(); // Toon alle gegevens bij het laden
       } catch (error) {
-        console.error('Fout bij ophalen gebruikersinloggegevens:', error);
+        addUserAction("Foutmelding in method {fetchUserLoginData()}", this.$options.name, String.empty, String.empty,
+        "Server https://84.235.165.56:1880 down.");
+        // console.error('Fout bij ophalen gebruikersinloggegevens:', error);
       }
     },
 

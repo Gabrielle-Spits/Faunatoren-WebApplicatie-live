@@ -16,14 +16,14 @@ export const addUserInLoginUsers = async (isIngelogd, isGelukt) => {
     })
         .then(response => {
             if (response.status != 200) {
-                console.error("Het loggen van de inloggen is mislukt functie addUserInLoginUsers");
+                // console.error("Het loggen van de inloggen is mislukt functie addUserInLoginUsers");
             }
             else {
-                console.log("Komt in de functie addUserInLoginUsers");
+                // console.log("Komt in de functie addUserInLoginUsers");
             }
         })
         .catch(error => {
-            console.error("Er is een fout opgetreden bij het loggen van de ingelogde gebruiker: ", error);
+            // console.error("Er is een fout opgetreden bij het loggen van de ingelogde gebruiker: ", error);
         });
 }
 
@@ -51,11 +51,11 @@ export const addUserAction = async (activiteitType, schermnaam, origineleWaarde 
         })
         .then(response => {
             if (response.status != 200) {
-                console.error("Het loggen van de gebruikersactie in de functie addUserAction is mislukt.");
+                // console.error("Het loggen van de gebruikersactie in de functie addUserAction is mislukt.");
             }
         })
         .catch(error => {
-            console.error("Er is een fout opgetreden bij het loggen van de gebruikersactie addUserAction: ", error);
+            // console.error("Er is een fout opgetreden bij het loggen van de gebruikersactie addUserAction: ", error);
         });
     }
 }

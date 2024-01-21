@@ -38,9 +38,6 @@ export default {
     };
   },
   methods: {
-    getNameOfVueFile() {
-      console.log(this.$options.name);
-    },
     login() {
       if (!this.email || !this.password) {
         this.showError('Vul alle velden in.');
@@ -66,12 +63,12 @@ export default {
         });
 
         if (addEmailAndInlogmomentInLoggingDatabase.ok) {
-          console.log('Login data posted successfully');
+          // console.log('Login data posted successfully');
         } else {
-          console.error('Failed to post login data');
+          // console.error('Failed to post login data');
         }
       } catch (error) {
-        console.error('Er is een fout opgetreden tijdens het invoeren van loggen:', error);
+        // console.error('Er is een fout opgetreden tijdens het invoeren van loggen:', error);
       }
     },
     async handleLogin() {
@@ -129,7 +126,6 @@ export default {
     },
   },
   mounted() {
-    this.getNameOfVueFile();
   },
 };
 </script>

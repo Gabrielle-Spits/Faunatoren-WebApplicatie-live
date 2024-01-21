@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { getUserLogEntries, addUserAction } from './../LoggingFunctions/LoggingDatabaseFunctions.js';
+import { addUserAction } from './../LoggingFunctions/LoggingDatabaseFunctions.js';
 import logGebruikerActies from './logGebruikerActies.vue';
 import logInlogmomentenGebruiker from './logInlogmomentenGebruiker.vue';
 
@@ -28,18 +28,12 @@ export default {
     toggleComponentVisibility() {
       this.showUserActions = !this.showUserActions;
     },
-    async actionOpenPageInLoggingDatabase() {
-      try {
-        await addUserAction("Opent het scherm", this.$options.name);
-      } catch (error) {
-        console.error('Fout bij toevoegen gebruikersactie:', error);
-      }
+    actionOpenPageInLoggingDatabase() {
+      addUserAction("Opent het scherm", this.$options.name);
     },
-
   },
   mounted() {
     this.actionOpenPageInLoggingDatabase();
-
     const userRole = sessionStorage.getItem('role');
 
     if (userRole !== 'Admin') {

@@ -128,13 +128,30 @@ export default {
     async fetchLocationOptions() {
       try {
         const response = await axios.get('https://84.235.165.56:1880/get/location');
+
         this.locationOptions = response.data;
         this.locationOptions = this.locationOptions.map(location => ({
           locationid: location.locationid,
         }));
       } catch (error) {
-        addUserAction("Foutmelding API ophalen alle locaties", this.$options.name, String.empty, String.empty, "Het ophalen van alle locaties is mislukt.");
-        console.error('Fout bij het ophalen van locatie-opties:', error);
+
+        // Response status controleren
+        if (error.response){
+          // Als de response status niet 200 is
+          if (error.response.status != 200){
+            addUserAction("Foutmeldingscode " + error.response.status + " API call {https://84.235.165.56:1880/get/location} in method {fetchLocationOptions()}",
+              this.$options.name, String.empty, String.empty, "Het ophalen van alle locaties is mislukt.");
+          }
+        }
+
+        // Checken of de server plat is
+        if (error.request){
+          // Als de server plat ligt
+          if (error.request.status == 0){
+            addUserAction("Foutmelding in method {fetchLocationOptions()}", this.$options.name, String.empty, String.empty, 
+              "Server https://84.235.165.56:1880 down.");
+          }
+        }
       }
     },
     async fetchUnoidOptions() {
@@ -147,8 +164,24 @@ export default {
         }));
         this.hasData = this.filteredUnoidOptions.length > 0;
       } catch (error) {
-        addUserAction("Foutmelding API ophalen Arduino UNO's van locaties", this.$options.name, String.empty, String.empty, "Het ophalen van alle Arduino UNO's van de geselecteerde locatie is mislukt.");
-        console.error('Fout bij het ophalen van unoid-opties:', error);
+
+        // Response status controleren
+        if (error.response){
+          // Als de response status niet 200 is
+          if (error.response.status != 200){
+            addUserAction("Foutmeldingscode " + error.response.status + " API call {https://84.235.165.56:1880/get/uno/${this.selectedLocationId()} in method {fetchUnoidOptions()}",
+            this.$options.name, String.empty, String.empty, "Het ophalen van één Arduino o.b.v. het locationID is mislukt.");
+          }
+        }
+
+        // Checken of de server plat is
+        if (error.request){
+          // Als de server plat ligt
+          if (error.request.status == 0){
+            addUserAction("Foutmelding in method {fetchUnoidOptions()}", this.$options.name, String.empty, String.empty,
+            "Server https://84.235.165.56:1880 down.");
+          }
+        }
       }
     },
     changeTime() {
@@ -165,8 +198,24 @@ export default {
       try {
         const response = await axios.get(this.getApiUrlData(this.selectedTime, this.selectedUnoid));
       } catch (error) {
-        addUserAction("Foutmelding API ophalen sensordata", this.$options.name, String.empty, String.empty, "Het ophalen van de sensordata o.b.v. tijd en unoID is mislukt.");
-        console.error('Fout bij het ophalen van gegevens:', error);
+
+        // Response status controleren
+        if (error.response){
+          // Als de response status niet 200 is
+          if (error.response.status != 200){
+            addUserAction("Foutmeldingscode " + error.response.status + " API call {https://84.235.165.56:1880/get/data/${time}/${unoid}} in method {getApiUrlData(time, unoid)}",
+            this.$options.name, String.empty, String.empty, "Het ophalen van de sensordata o.b.v. de geselecteerde tijd en Arduino (= de toren) is mislukt.");
+          }
+        }
+
+        // Checken of de server plat is
+        if (error.request){
+          // Als de server plat ligt
+          if (error.request.status == 0){
+            addUserAction("Foutmelding in method {fetchChartData()}", this.$options.name, String.empty, String.empty,
+            "Server https://84.235.165.56:1880 down.");
+          }
+        }
       }
     },
     getApiUrlData(time, unoid) {

@@ -51,7 +51,7 @@ export default {
         const dataLangs = await responseLangs.json();
         this.vogelsLangs = dataLangs;
       } catch (error) {
-        console.error('Er is een fout opgetreden bij het ophalen van de gegevens:', error);
+        // console.error('Er is een fout opgetreden bij het ophalen van de gegevens:', error);
       }
     },
     getRadarPredict(id) {

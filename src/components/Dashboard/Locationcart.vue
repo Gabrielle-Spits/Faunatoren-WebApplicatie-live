@@ -56,7 +56,6 @@ export default {
         }
       } catch (error) {
         addUserAction("Foutmelding API ophalen locatiegegevens van het vogelhuisje", this.$options.name, String.empty, String.empty, "Het ophalen van de locatiegegevens van het vogelhuisje is mislukt.");
-        console.error('Fout bij het ophalen van locatiegegevens:', error);
       }
     },
     start() {

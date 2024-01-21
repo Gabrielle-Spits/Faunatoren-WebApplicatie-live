@@ -112,16 +112,31 @@ export default {
     async fetchLocations() {
       try {
         const response = await fetch('https://84.235.165.56:1880/get/location');
+
+        if (response.status != 200){
+          addUserAction("Foutmeldingscode " + response.status + " API call {https://84.235.165.56:1880/get/location} in method {fetchLocations()}",
+          this.$options.name, String.empty, String.empty, "Het ophalen van alle locaties is mislukt.");
+        }
+
         const data = await response.json();
         this.locations = data;
         this.locationIds = this.locations.map(location => location.locationid);
       } catch (error) {
+        addUserAction("Foutmelding in method {fetchLocations()}", this.$options.name, String.empty, String.empty,
+        "Server https://84.235.165.56:1880 down.");
+
         this.showError('Er gaat iets mis, probeer het later nog een keer');
       }
     },
     async fetchLocationDetails(locationId) {
       try {
         const response = await fetch(`https://84.235.165.56:1880/get/location/${locationId}`);
+
+        if (response.status != 200){
+          addUserAction("Foutmeldingscode " + response.status + " API call {https://84.235.165.56:1880/get/location/${locationId}} in method {fetchLocationDetails(locationId)}",
+          this.$options.name, String.empty, String.empty, "Het ophalen één specifieke locatie is mislukt.");
+        }
+
         const data = await response.json();
 
         if (data.length > 0) {
@@ -134,6 +149,9 @@ export default {
           this.showError('Geselecteerde locatie niet gevonden.');
         }
       } catch (error) {
+        addUserAction("Foutmelding in method {fetchLocations()}", this.$options.name, String.empty, String.empty,
+        "Server https://84.235.165.56:1880 down.");
+
         this.showError('Fout bij het ophalen van locatiedetails, probeer het later nog een keer ');
       }
     },
@@ -141,12 +159,20 @@ export default {
       try {
         const checkLatitudeLongitudeURL = 'https://84.235.165.56:1880/get/location';
         const checkLatitudeResponse = await fetch(checkLatitudeLongitudeURL);
+
+        if (checkLatitudeResponse.status != 200){
+          addUserAction("Foutmeldingscode " + checkLatitudeResponse.status + " API call {https://84.235.165.56:1880/get/location} in method {checkLatitudeLongitude(latitude, longitude)}",
+          this.$options.name, String.empty, String.empty, "Het ophalen van alle locaties is mislukt.")
+        }
+
         const latitudeLongitudeData = await checkLatitudeResponse.json();
 
         const latitudeLongitudeExists = latitudeLongitudeData.some(location => location.latitude === latitude && location.longitude === longitude);
 
         return latitudeLongitudeExists;
       } catch (error) {
+        addUserAction("Foutmelding in method {checkLatitudeLongitude(latitude, longitude)}", this.$options.name, String.empty, String.empty,
+        "Server https://84.235.165.56:1880 down.");
         this.showError('Er gaat iets fout, probeer het later nog een keer:');
         return false;
       }
@@ -188,9 +214,13 @@ export default {
                 this.clearLocationDetails();
                 this.fetchLocations();
               } else {
+                addUserAction("Foutmeldingscode " + responsePostLocation.status + " API call {https://84.235.165.56:1880/post/location} in method {postLocation()}",
+                this.$options.name, String.empty, String.empty, "Het toevoegen van een locatie is mislukt.");
                 this.showError('Er is iets fout gegaan, probeer het later opnieuw');
               }
             } catch (error) {
+              addUserAction("Foutmelding in method {postLocation()}", this.$options.name, String.empty, String.empty,
+              "Server https://84.235.165.56:1880 down.");
               this.showError('Er is iets fout gegaan, probeer het later opnieuw:');
             }
           } else {
@@ -242,9 +272,15 @@ export default {
               this.showUpdateForm = false;
               this.submitButtonLabel = 'Locatie toevoegen';
             } else {
+              addUserAction("Foutmeldingscode " + response.status + " API call {https://84.235.165.56:1880/update/location} in method {updateLocation()}",
+              this.$options.name, String.empty, String.empty, "Het wijzigen van een locatie is mislukt.");
+
               this.showError('Er gaat iets mis, probeer het later nog een keer');
             }
           } catch (error) {
+            addUserAction("Foutmelding in method {updateLocation()}", this.$options.name, String.empty, String.empty,
+            "Server https://84.235.165.56:1880 down.");
+
             this.showError('Er gaat iets mis, probeer het later nog een keer');
           }
         } else {
@@ -265,11 +301,15 @@ export default {
         const url = `https://84.235.165.56:1880/get/location/${this.locationid}`;
         const response = await fetch(url);
         if (!response.ok) {
+          addUserAction("Foutmeldingscode " + response.status + " API call {https://84.235.165.56:1880/get/location/${this.locationid}} in method {checkLocationExists()}",
+          this.$options.name, String.empty, String.empty, "Het ophalen van de door de gebruiker ingevulde locatie is mislukt.");
           throw new Error('Network response was not ok');
         }
         const data = await response.json();
         return data.length > 0;
       } catch (error) {
+        addUserAction("Foutmelding in method {checkLocationExists()}", this.$options.name, String.empty, String.empty,
+        "Server https://84.235.165.56:1880 down.");
         this.showError('Er is iets fout gegaan, probeer het later nog een keer:');
         return false;
       }

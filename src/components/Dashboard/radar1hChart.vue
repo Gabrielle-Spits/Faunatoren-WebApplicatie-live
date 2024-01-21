@@ -11,6 +11,7 @@
 
 <script>
 import { Line } from 'vue-chartjs';
+import { addUserAction } from './../LoggingFunctions/LoggingDatabaseFunctions.js';
 import {
   Chart as ChartJS,
   Title,
@@ -167,11 +168,25 @@ export default {
           this.chartData.datasets = datasets;
           this.chartOptions.scales.x.labels = labels;
 
-        } else {
-          console.error('Lege of onjuiste radar-API-respons ontvangen.');
-        }
+        } 
       } catch (error) {
-        console.error('Fout bij het laden van de radar gegevens:', error);
+        // Resonse status controleren
+        if (error.response){
+          // Als de response status niet 200 is
+          if (error.response.status != 200){
+            addUserAction("Foutmeldingscode " + error.response.status + " API call {https://84.235.165.56:1880/get/data/${time}/${unoid}} in bestand dashBoard.vue method {getApiUrlData(time, unoid)}",
+            this.$options.name, String.empty, String.empty, "Het ophalen van de radardata van de Arduino (= de toren) is mislukt.");
+          }
+        }
+
+        // Checken of de server plat is
+        if (error.request){
+            // Als de server plat ligt
+            if (error.request.status == 0){
+              addUserAction("Foutmelding in method {loadLineChartDataFromAPI()}", this.$options.name, String.empty, String.empty,
+              "Server https://84.235.165.56:1880 down.");
+          }
+        }
       } finally {
         this.isLoading = false;
       }

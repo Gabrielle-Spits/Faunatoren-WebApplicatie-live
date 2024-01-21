@@ -154,7 +154,7 @@ export default {
           this.aantalVogelLocatie = `aantal vogels in de toren ${this.selectedLocationId}: ${data.totalIn}`;
         }
       } catch (error) {
-        console.error('Fout bij het ophalen van vogelgegevens:', error);
+        // console.error('Fout bij het ophalen van vogelgegevens:', error);
       }
     },
     async fetchVogelsDataUno() {
@@ -168,7 +168,7 @@ export default {
           this.aantalVogelArduino = `aantal vogels in het vogelhuisje ${this.selectedUnoid}: ${data.TotalIn}`;
         }
       } catch (error) {
-        console.error('Fout bij het ophalen van vogelgegevens:', error);
+        // console.error('Fout bij het ophalen van vogelgegevens:', error);
       }
     },
     async loadLineChartDataFromAPI() {
@@ -251,10 +251,10 @@ export default {
           this.chartData.datasets = datasets;
           this.chartOptions.scales.x.labels = labels;
         } else {
-          console.error('Lege of onjuiste vogel-API-respons ontvangen.');
+          // console.error('Lege of onjuiste vogel-API-respons ontvangen.');
         }
       } catch (error) {
-        console.error('Fout bij het laden van de vogelgegevens:', error);
+        // console.error('Fout bij het laden van de vogelgegevens:', error);
       } finally {
         this.isLoading = false;
       }

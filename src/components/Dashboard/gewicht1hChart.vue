@@ -124,7 +124,6 @@ export default {
   mounted() {
     this.loadWeightChartDataFromAPI();
     setInterval(() => {
-      console.log('Interval: gegevens worden opnieuw geladen');
       this.loadWeightChartDataFromAPI();
     }, this.reloadInterval);
   },
@@ -175,13 +174,27 @@ export default {
           this.chartData.datasets = datasets;
           this.chartOptions.scales.x.labels = labels;
 
-        } else {
-          addUserAction("Foutmelding API ophalen gewicht van het vogelhuisje", this.$options.name, '', '', "Lege of onjuiste API-respons ontvangen.");
-          console.error('Lege of onjuiste gewicht-API-respons ontvangen.');
-        }
+        } 
       } catch (error) {
-        addUserAction("Foutmelding API ophalen gewicht van het vogelhuisje", this.$options.name, '', '', "Er is een fout opgetreden bij het ophalen van de gewichtsgegevens van de Arduino.");
-        console.error('Fout bij het laden van de gewichtsgegevens:', error);
+        // Response status controleren
+        if (error.response){
+          // Als de response status niet 200 is
+          if (error.response.status != 200){
+            console.log("FOUT API gewicht1hChart");
+            addUserAction("Foutmeldingscode " + error.response.status + " API call {https://84.235.165.56:1880/get/data/${time}/${unoid}} in bestand dashBoard.vue method {getApiUrlData(time, unoid)}",
+            this.$options.name, String.empty, String.empty, "Het ophalen van de gewichtsdata van de Arduino (= de toren) is mislukt.");
+          }
+        }
+
+        // Checken of de server plat is
+        if (error.request){
+          // Als de server plat ligt
+          if (error.request.status == 0){
+            console.log("SERVER PLAT gewicht1hChart");
+            addUserAction("Foutmelding in method {loadWeightChartDataFromAPI()}", this.$options.name, String.empty, String.empty,
+            "Server https://84.235.165.56:1880 down.");
+          }
+        }
       } finally {
         this.isLoading = false;
       }

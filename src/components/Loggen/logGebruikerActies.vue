@@ -111,14 +111,16 @@ export default {
     },
   },
   methods: {
-
+    actionOpenPageInLoggingDatabase() {
+      addUserAction("Opent het scherm", this.$options.name);
+    },
     async fetchUserLogEntries() {
       try {
         this.userLogEntries = await getUserLogEntries();
         this.userEmails = [...new Set(this.userLogEntries.map(entry => entry.emailadres))];
         this.filterUserLogEntries();
       } catch (error) {
-        console.error('Fout bij ophalen gebruikersacties:', error);
+        // console.error('Fout bij ophalen gebruikersacties:', error);
       }
     },
 
@@ -133,6 +135,7 @@ export default {
   },
   mounted() {
     this.fetchUserLogEntries();
+    this.actionOpenPageInLoggingDatabase();
 
     const userRole = sessionStorage.getItem('role');
 
