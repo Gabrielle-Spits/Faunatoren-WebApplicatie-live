@@ -382,7 +382,6 @@ export default {
 .locatiegegevens {
   width: 50%;
   margin: 20px;
-  /* Voeg wat ruimte toe rondom de formulieren */
 }
 
 .form-container-register {

@@ -334,7 +334,7 @@ export default {
 .locatie-container {
   display: flex;
   justify-content: center;
-  margin-top: 20px;
+  margin: 20px;
   /* Extra ruimte aan de bovenkant voor consistentie */
 }
 
@@ -450,7 +450,5 @@ button:hover,
   background-color: #bfc5a4;
   position: sticky;
   top: 0;
-  z-index: 1;
-  /* Zorg ervoor dat de kolomnamen boven de andere cellen blijven */
 }
 </style>
