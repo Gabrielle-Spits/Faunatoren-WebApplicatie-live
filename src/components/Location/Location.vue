@@ -181,13 +181,11 @@ export default {
       if (this.locationid && this.locationname && this.latitude && this.longitude) {
         const locationExists = await this.checkLocationExists();
         const latitudeLongitudeExists = await this.checkLatitudeLongitude(this.latitude, this.longitude);
-
         if (!locationExists) {
           if (latitudeLongitudeExists) {
             this.showError('Er bestaat al een locatie met deze lengte- en breedtegraad.');
             return;
           }
-
           const isLatitudeValid = this.validateLatitude(this.latitude);
           const isLongitudeValid = this.validateLongitude(this.longitude);
 
@@ -211,6 +209,7 @@ export default {
               if (responsePostLocation.ok) {
                 const result = await responsePostLocation.json();
                 this.showSuccess('Locatiegegevens succesvol toegevoegd');
+                addUserAction("Locatie toevoegen", this.$options.name, null, JSON.stringify(data));
                 this.clearLocationDetails();
                 this.fetchLocations();
               } else {
@@ -266,6 +265,20 @@ export default {
             if (response.ok) {
               const result = await response.json();
               this.showSuccess('Locatiegegevens succesvol bijgewerkt:', result);
+
+              // Haalt de originele locatiegegevens op
+              const getOriginalLocation = this.locations.find(location => location.locationid == data.locationid);
+              
+              // Sla de originele locatiegegevens in een nieuwe array op
+              const makeOriginalLocationObject = {
+                locationid: getOriginalLocation.locationid,
+                locationname: getOriginalLocation.locationname,
+                latitude: getOriginalLocation.latitude,
+                longitude: getOriginalLocation.longitude
+              };
+
+              addUserAction("Locatie wijzigen", this.$options.name, JSON.stringify(makeOriginalLocationObject), JSON.stringify(data));
+
               this.clearLocationDetails();
 
               this.fetchLocations();

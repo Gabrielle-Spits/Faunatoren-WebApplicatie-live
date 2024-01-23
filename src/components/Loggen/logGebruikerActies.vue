@@ -72,12 +72,7 @@ table {
   border-collapse: collapse;
 }
 
-th,
-td {
-  border: 1px solid rgb(39, 204, 124);
-  padding: 8px;
-  text-align: center;
-}
+
 
 th {
   border: 1px solid rgb(30, 161, 98);
@@ -86,7 +81,22 @@ th {
   position: sticky;
   top: 0;
   text-align: center;
+  padding: 8px;
+
 }
+
+td{
+  border: 1px solid rgb(39, 204, 124);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  text-align: left;
+  white-space: pre-wrap;
+
+}
+
+
 
 
 </style>

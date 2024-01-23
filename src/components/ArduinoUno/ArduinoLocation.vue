@@ -157,6 +157,7 @@ export default {
         if (response.ok) {
           const result = await response.json();
           this.showSuccess('Arduino succesvol toegevoegd.');
+          addUserAction("Arduino toevoegen", this.$options.name, null, JSON.stringify(data));
           this.resetForm();
           this.fetchArduinoData();
         } else {
@@ -187,6 +188,19 @@ export default {
         if (response.ok) {
           const result = await response.json();
           this.showSuccess('Arduino succesvol bijgewerkt.');
+
+          // Haalt de originele Arduino gegegevens op
+          const getOriginalArduino = this.arduinoData.find(arduino => arduino.unoid == data.unoid);
+
+          // Sla de originele Arduino gegevens in een nieuwe array op
+          const makeOriginalArduinoObject = {
+            locationid: getOriginalArduino.locationid,
+            unoid: getOriginalArduino.unoid,
+            unoname: getOriginalArduino.unoname
+          }
+
+          addUserAction("Arduino wijzigen", this.$options.name, JSON.stringify(makeOriginalArduinoObject), JSON.stringify(data));
+          
           this.fetchArduinoData();
         } else {
           addUserAction("Foutmelding API wijzigen Arduino UNO", this.$options.name, String.empty, String.empty, "Er is iets fout gegaan in de API call /update/uno.");
