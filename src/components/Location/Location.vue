@@ -341,7 +341,7 @@ export default {
       }
     },
     showSuccess(message) {
-      this.successMessage = `${message}}`;
+      this.successMessage = `${message}`;
       setTimeout(() => {
         this.successMessage = '';
       }, 5000);
