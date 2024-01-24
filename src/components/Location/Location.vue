@@ -234,14 +234,8 @@ export default {
     },
     async updateLocation() {
       const isOldDataEmpty = [this.locationid, this.locationname, this.latitude, this.longitude].some(value => value === '');
-      const latitudeLongitudeExists = await this.checkLatitudeLongitude(this.latitude, this.longitude);
 
       if (!isOldDataEmpty) {
-        if (latitudeLongitudeExists) {
-          this.showError('Er bestaat al een locatie met deze lengte- en breedtegraad.');
-          return;
-        }
-
         const isLatitudeValid = this.validateLatitude(this.latitude);
         const isLongitudeValid = this.validateLongitude(this.longitude);
 

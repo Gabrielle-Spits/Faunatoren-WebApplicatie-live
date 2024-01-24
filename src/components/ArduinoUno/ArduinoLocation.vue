@@ -187,6 +187,7 @@ export default {
 
         if (response.ok) {
           const result = await response.json();
+         
           this.showSuccess('Arduino succesvol bijgewerkt.');
 
           // Haalt de originele Arduino gegegevens op
@@ -200,7 +201,9 @@ export default {
           }
 
           addUserAction("Arduino wijzigen", this.$options.name, JSON.stringify(makeOriginalArduinoObject), JSON.stringify(data));
-          
+          this.showUpdateForm = false;
+          this.submitButtonLabel = 'Arduino toevoegen';
+          this.resetForm();
           this.fetchArduinoData();
         } else {
           addUserAction("Foutmelding API wijzigen Arduino UNO", this.$options.name, String.empty, String.empty, "Er is iets fout gegaan in de API call /update/uno.");
@@ -229,7 +232,7 @@ export default {
       catch (error) {
         addUserAction("Foutmelding in method checkUnoidExists(unoid)", this.$options.name, String.empty, String.empty,
           "Server https://84.235.165.56:1880 down.");
-          this.showError('Er is iet fout gegaan probeer het later opnieuw.');
+        this.showError('Er is iet fout gegaan probeer het later opnieuw.');
 
         return false;
       }
@@ -288,7 +291,7 @@ export default {
           "Server https://84.235.165.56:1880 down.");
       }
     },
-   
+
     updateArduinoClicked() {
       this.showUpdateForm = !this.showUpdateForm;
 
