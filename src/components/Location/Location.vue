@@ -258,7 +258,7 @@ export default {
 
             if (response.ok) {
               const result = await response.json();
-              this.showSuccess('Locatiegegevens succesvol bijgewerkt:', result);
+              this.showSuccess('Locatiegegevens succesvol bijgewerkt:');
 
               // Haalt de originele locatiegegevens op
               const getOriginalLocation = this.locations.find(location => location.locationid == data.locationid);
