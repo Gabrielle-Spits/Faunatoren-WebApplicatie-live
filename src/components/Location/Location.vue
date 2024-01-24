@@ -340,8 +340,8 @@ export default {
         this.postLocation();
       }
     },
-    showSuccess(message, result) {
-      this.successMessage = `${message} ${JSON.stringify(result)}`;
+    showSuccess(message) {
+      this.successMessage = `${message}}`;
       setTimeout(() => {
         this.successMessage = '';
       }, 5000);
