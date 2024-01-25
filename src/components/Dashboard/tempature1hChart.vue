@@ -163,7 +163,7 @@ export default {
             if (!existingDataset) {
               existingDataset = {
                 unoid: dataRij.unoid,
-                label: `Temperatuur ${dataRij.unoid}`,
+                label: `Arduino ${dataRij.unoid}, Tempratuur`,
                 borderColor: this.getRandomColor(),
                 fill: false,
                 data: [],
@@ -227,7 +227,6 @@ export default {
 
 .line-chart-temperature {
   width: 100%;
-  /* max-width: 1250px; */
   margin: 0 auto;
   max-height: 300px;
 }

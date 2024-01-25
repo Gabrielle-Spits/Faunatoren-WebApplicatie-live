@@ -155,7 +155,7 @@ export default {
               // Dataset bestaat nog niet, voeg het toe
               let newDataset = {
                 unoid: dataRij.unoid,
-                label: `Gewicht ${dataRij.unoid}`,
+                label: `Arduino ${dataRij.unoid}, gewicht`,
                 borderColor: this.getRandomColor(),
                 fill: false,
                 data: [dataRij.weight], // Voeg het gewicht toe aan de nieuwe dataset
@@ -215,7 +215,6 @@ export default {
 
 .line-chart-gewicht {
   width: 100%;
-  /* max-width: 1250px; */
   margin: 0 auto;
   max-height: 300px;
 }
